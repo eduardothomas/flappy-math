@@ -1,7 +1,7 @@
 <title>Flappy Math</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=Pixelify+Sans:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=Pixelify+Sans:wght@500;700&family=Fredoka:wght@600;700&display=swap">
 <style>
 /* Layout: un escenario 9:16 escalado al viewport; pizarra de aula con lápices como obstáculos.
    Tema único deliberado (pizarra oscura), con todos los colores explícitos. */
@@ -19,6 +19,7 @@
   --ok: #7fd18b;
   --bad: #ff8a7a;
   --font-display: "Pixelify Sans", "Courier New", monospace;
+  --font-digits: "Fredoka", "Arial Rounded MT Bold", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: dark;
@@ -95,7 +96,7 @@ button:focus-visible { outline: calc(var(--s) * 3px) solid var(--chalk); outline
 .scores { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--s) * 10px); width: 100%; }
 .scores div { display: flex; flex-direction: column; gap: calc(var(--s) * 2px); }
 .scores span { font-size: calc(var(--s) * 11px); text-transform: uppercase; letter-spacing: .12em; color: #5b6a64; }
-.scores strong { font: 700 calc(var(--s) * 40px)/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.scores strong { font: 700 calc(var(--s) * 44px)/1 var(--font-digits); font-variant-numeric: tabular-nums; }
 .badge { font: 700 calc(var(--s) * 13px) var(--font-body); background: var(--ink); color: var(--pencil); padding: calc(var(--s) * 4px) calc(var(--s) * 10px); border-radius: 999px; letter-spacing: .06em; }
 .seed { font: 500 calc(var(--s) * 10px) var(--font-num); color: #7d8a84; }
 
@@ -510,7 +511,7 @@ button:focus-visible { outline: calc(var(--s) * 3px) solid var(--chalk); outline
 
     for (const f of floaters) {
       ctx.globalAlpha = Math.max(0, f.life); ctx.fillStyle = COL.pencil;
-      ctx.font = '700 22px "Pixelify Sans", monospace'; ctx.textAlign = 'center'; ctx.fillText(f.text, f.x, f.y);
+      ctx.font = '700 24px "Fredoka", "Arial Rounded MT Bold", sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = COL.ink; ctx.strokeText(f.text, f.x, f.y); ctx.fillText(f.text, f.x, f.y);
       ctx.globalAlpha = 1;
     }
 
@@ -520,36 +521,37 @@ button:focus-visible { outline: calc(var(--s) * 3px) solid var(--chalk); outline
   function drawHud(s, time) {
     // tablero de objetivo
     const cur = game.current();
-    const pw = 196, ph = 92, px = (W - pw) / 2, py = 10;
+    const pw = 224, ph = 94, px = (W - pw) / 2, py = 10;
     ctx.fillStyle = 'rgba(0,0,0,.3)'; roundRect(px + 2, py + 5, pw, ph, 6); ctx.fill();
     ctx.fillStyle = COL.paper; roundRect(px, py, pw, ph, 6); ctx.fill();
     ctx.fillStyle = COL.pencil; ctx.fillRect(px, py, pw, 5);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#5b6a64'; ctx.font = '600 10px "IBM Plex Sans", sans-serif';
     ctx.fillText(t('target').split('').join(' '), W / 2, py + 21);
-    ctx.fillStyle = COL.ink; ctx.font = '700 38px "Pixelify Sans", monospace';
+    ctx.fillStyle = COL.ink; ctx.font = '700 40px "Fredoka", "Arial Rounded MT Bold", sans-serif';
     ctx.fillText(cur ? String(cur.ch.target) : '–', W / 2, py + 56);
     if (cur) {
-      ctx.font = '500 12px "IBM Plex Mono", monospace'; ctx.fillStyle = '#3c4a45';
-      ctx.fillText(`▲ ${cur.ch.upper.text}   ▼ ${cur.ch.lower.text}`, W / 2, py + 80);
+      ctx.font = '700 14px "IBM Plex Mono", monospace'; ctx.fillStyle = '#2c3a35';
+      ctx.fillText(`▲ ${cur.ch.upper.text}  ▼ ${cur.ch.lower.text}`, W / 2, py + 80);
     }
     // puntuación y racha
-    ctx.textAlign = 'left'; ctx.fillStyle = COL.chalk; ctx.font = '700 40px "Pixelify Sans", monospace';
-    ctx.fillText(String(s.score), 14, 50);
+    ctx.textAlign = 'left'; ctx.font = '700 44px "Fredoka", "Arial Rounded MT Bold", sans-serif'; ctx.lineJoin = 'round';
+    ctx.lineWidth = 6; ctx.strokeStyle = COL.ink; ctx.strokeText(String(s.score), 14, 52);
+    ctx.fillStyle = COL.chalk; ctx.fillText(String(s.score), 14, 52);
     if (s.streak >= 2) {
-      ctx.font = '600 12px "IBM Plex Mono", monospace'; ctx.fillStyle = COL.pencil;
-      ctx.fillText(`${t('streak')} ×${s.streak}`, 15, 70);
+      ctx.font = '700 14px "Fredoka", "Arial Rounded MT Bold", sans-serif'; ctx.lineWidth = 4; ctx.strokeStyle = COL.ink; ctx.strokeText(`${t('streak')} ×${s.streak}`, 15, 74);
+      ctx.fillStyle = COL.pencil; ctx.fillText(`${t('streak')} ×${s.streak}`, 15, 74);
     }
     // cuenta atrás
     if (s.status === 'countdown') {
       const n = Math.ceil(s.countdown);
-      ctx.textAlign = 'center'; ctx.font = '700 96px "Pixelify Sans", monospace';
+      ctx.textAlign = 'center'; ctx.font = '700 104px "Fredoka", "Arial Rounded MT Bold", sans-serif';
       ctx.fillStyle = 'rgba(20,42,37,.6)'; ctx.fillText(String(n), W / 2 + 4, 286);
       ctx.fillStyle = COL.chalk; ctx.fillText(String(n), W / 2, 282);
     }
     if (banner && banner.life > 0) {
       ctx.globalAlpha = Math.min(1, banner.life * 2); ctx.textAlign = 'center';
-      ctx.font = '700 26px "Pixelify Sans", monospace'; ctx.fillStyle = COL.pencil; ctx.fillText(banner.text, W / 2, 150);
+      ctx.font = '700 28px "Fredoka", "Arial Rounded MT Bold", sans-serif'; ctx.lineWidth = 6; ctx.strokeStyle = COL.ink; ctx.strokeText(banner.text, W / 2, 152); ctx.fillStyle = COL.pencil; ctx.fillText(banner.text, W / 2, 152);
       ctx.globalAlpha = 1;
     }
   }
@@ -699,7 +701,7 @@ button:focus-visible { outline: calc(var(--s) * 3px) solid var(--chalk); outline
 
   applyTexts(); show('menu');
   const fontsReady = document.fonts ? Promise.race([
-    Promise.all(['700 20px "Pixelify Sans"', '700 20px "IBM Plex Mono"', '500 16px "IBM Plex Mono"', '600 10px "IBM Plex Sans"'].map((f) => document.fonts.load(f))),
+    Promise.all(['700 20px "Pixelify Sans"', '700 20px "IBM Plex Mono"', '500 16px "IBM Plex Mono"', '600 10px "IBM Plex Sans"', '700 40px "Fredoka"'].map((f) => document.fonts.load(f))),
     new Promise((r) => setTimeout(r, 1500))
   ]) : Promise.resolve();
   fontsReady.then(redrawScribbles).catch(() => {});
