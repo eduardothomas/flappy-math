@@ -1,0 +1,8 @@
+{
+  "appId": "com.eduardothomas.flappymath",
+  "appName": "Flappy Math",
+  "webDir": "www",
+  "backgroundColor": "#142a25",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never" }
+}

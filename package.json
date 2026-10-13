@@ -1,0 +1,22 @@
+{
+  "name": "flappy-math",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Flappy Math — arcade de cálculo mental (Web, Android, iOS)",
+  "scripts": {
+    "test": "node test/run-tests.js",
+    "build": "node build.js",
+    "serve": "npx --yes http-server www -p 8080 -c-1",
+    "cap:sync": "node build.js && npx cap sync",
+    "android": "node build.js && npx cap sync android && npx cap open android",
+    "ios": "node build.js && npx cap sync ios && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}
